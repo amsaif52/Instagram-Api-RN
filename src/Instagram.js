@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { List, ListItem, SearchBar } from "react-native-elements";
 import {data} from './mock';
+import database from './database';
+import HashTable from './HashTable';
 const statusBarHeight = StatusBar.currentHeight;
 
 export default class Instagram extends Component{
@@ -21,14 +23,22 @@ export default class Instagram extends Component{
         super(props)  
         this.state={
             data:[],
-            loading: true
+            loading: true,
+            fData:[]
         }
     }
 
     componentDidMount(){
+        let hData = new HashTable(data)
+        let xy = database.data.map((value,index)=>{
+            console.log(hData.getItem(value.id))
+            return hData.getItem(value.id);
+        })
+        console.log(`xy:${xy}`)
         this.setState({
             data: data,
-            loading:false
+            loading:false,
+            fData:xy
         })
     }
     renderSeparator = () => {
@@ -48,7 +58,7 @@ export default class Instagram extends Component{
         return( 
             <List containerStyle={styles.page}>
                 <FlatList
-                data={this.state.data}
+                data={this.state.fData}
                 renderItem={({ item }) =>  
                     <ListItem
                         roundAvatar
@@ -72,11 +82,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
         borderTopWidth: 0, 
         borderBottomWidth: 0
-    },
-    text:{
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
     }
 })
 
